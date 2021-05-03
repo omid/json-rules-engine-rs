@@ -45,3 +45,6 @@ email = ["sendgrid", "futures-util"]
 
 eval  = ["rhai"]
 path  = ["jsonpath_lib"]
+
+[package.metadata.cargo-all-features]
+skip_optional_dependencies = true
