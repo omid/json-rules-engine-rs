@@ -386,6 +386,7 @@ async fn test_a_pointer() {
     assert_eq!(rule_results[0].condition_result.status, Status::Met)
 }
 
+#[cfg(feature = "path")]
 #[tokio::test]
 async fn test_a_pointer_and_path() {
     #[derive(Deserialize, Serialize)]
