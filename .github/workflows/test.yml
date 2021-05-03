@@ -18,8 +18,8 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           ~/.cargo/bin
-          target/release/
-        key: cargo-${{ hashFiles('Cargo.toml') }}
+          target/
+        key: cargo
         restore-keys: |
-          cargo-
+          cargo
     - run: make install-requirements test
