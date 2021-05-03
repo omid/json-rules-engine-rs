@@ -32,6 +32,7 @@ thiserror    = "1.0"
 async-trait  = "0.1"
 strum = "0.20"
 strum_macros = "0.20"
+jsonpath_lib = { version = "0.2", optional = true }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
@@ -41,4 +42,6 @@ default = []
 
 callback = ["reqwest"]
 email = ["sendgrid", "futures-util"]
+
 eval  = ["rhai"]
+path  = ["jsonpath_lib"]

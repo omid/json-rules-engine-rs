@@ -369,7 +369,7 @@ async fn test_a_pointer() {
     let rule: Rule = serde_json::from_str::<Rule>(
         &serde_json::to_string(&rule_json).unwrap(),
     )
-        .unwrap();
+    .unwrap();
 
     let mut engine = Engine::new();
     engine.add_rule(rule);
@@ -379,6 +379,56 @@ async fn test_a_pointer() {
             "name": "Cheng JIANG",
             "age": 24,
         }
+    });
+
+    let rule_results = engine.run(&facts).await.unwrap();
+
+    assert_eq!(rule_results[0].condition_result.status, Status::Met)
+}
+
+#[tokio::test]
+async fn test_a_pointer_and_path() {
+    #[derive(Deserialize, Serialize)]
+    struct Facts {
+        name: String,
+        age: u8,
+        action: String,
+    }
+
+    let rule_json = json!({
+        "conditions": {
+            "and": [
+                {
+                    "field": "people",
+                    "operator": "string_contains",
+                    "value": "Cheng JIANG",
+                    "path": "$..name"
+                }
+            ]
+        },
+        "events": [
+        ]
+    });
+
+    let rule: Rule = serde_json::from_str::<Rule>(
+        &serde_json::to_string(&rule_json).unwrap(),
+    )
+    .unwrap();
+
+    let mut engine = Engine::new();
+    engine.add_rule(rule);
+
+    let facts = json!({
+        "people": [
+            {
+                "name": "Cheng JIANG",
+                "age": 24,
+            },
+            {
+                "name": "Omid Rad",
+                "age": 23,
+            },
+        ]
     });
 
     let rule_results = engine.run(&facts).await.unwrap();
