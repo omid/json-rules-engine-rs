@@ -1,9 +1,8 @@
-use crate::Constraint;
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use crate::{status::Status, Constraint};
 #[cfg(feature = "eval")]
 use rhai::{serde::to_dynamic, Engine, Scope};
-use crate::status::Status;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -151,7 +150,11 @@ impl Condition {
                     #[cfg(feature = "path")]
                     {
                         if let Some(p) = path {
-                            let x = jsonpath_lib::select(&node, p).unwrap().into_iter().cloned().collect();
+                            let x = jsonpath_lib::select(&node, p)
+                                .unwrap()
+                                .into_iter()
+                                .cloned()
+                                .collect();
                             node = Value::Array(x);
                         }
                     }
