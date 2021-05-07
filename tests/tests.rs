@@ -1,9 +1,10 @@
 use async_trait::async_trait;
+use erased_serde::Serialize as ErasedSerialize;
 #[cfg(feature = "eval")]
 use json_rules_engine::{from_dynamic, Map};
 use json_rules_engine::{Engine, Error, EventTrait, Rule, Status};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
+use serde_json::{json, Value};
 use std::collections::HashMap;
 
 #[tokio::test]
@@ -273,13 +274,17 @@ async fn custom_event() {
         async fn trigger(
             &self,
             params: &HashMap<String, serde_json::Value>,
-            facts: &serde_json::Value,
+            facts: &(dyn ErasedSerialize + Sync),
         ) -> Result<(), Error> {
             let mut name =
                 params.get("name").unwrap().as_str().unwrap().to_string();
 
+            let value = serde_json::from_str::<Value>(
+                &serde_json::to_string(facts).unwrap(),
+            )
+            .unwrap();
             if let Ok(tmpl) = mustache::compile_str(&name)
-                .and_then(|template| template.render_to_string(facts))
+                .and_then(|template| template.render_to_string(&value))
             {
                 name = tmpl;
             }
